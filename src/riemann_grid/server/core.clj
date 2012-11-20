@@ -37,7 +37,7 @@
 (defn -main
   [& args]
   (let [[options args banner] (cli args
-                                   ["-h" "--host" "host" :default "127.0.0.1"]
+                                   ["-H" "--host" "host" :default "127.0.0.1"]
                                    ["-P" "--client-port" "riemann port"
                                     :parse-fn #(Integer. %) :default 5555]
                                    ["-h" "--help" "show help"
