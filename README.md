@@ -16,12 +16,36 @@ lein with-profile client cljsbuild once
 lein with-profile server uberjar
 ```
 
-The resulting jar is good to go
+The resulting jar is good to go, I would advise running at a very
+low `Xmx` value, such as `-Xmx32m`
 
 ## Running
 
-Just run the resulting jar
+Just run the resulting jar, it optionally takes the
+following arguments:
 
+* `-l` or `--listen`: HTTP address to listen on
+* `-p` or `--listen-port`: HTTP port to listen on
+* `-H` or `--riemann-host`: Address where the riemann index lives
+* `-P` or `--riemann-port`: Port the index listens on
+* `-e` or `--environment`: Enable some debugging if set to "development"
+* `-h` or `--help`: display help and exit
+
+## Caveats
+
+This first release is rough around the edges, it was 
+put together in about a day, please mind the following
+issues:
+
+* Without a working connection at startup, the daemon will not launch
+* Logging configuration has to be supplied with `-Dlog4j.configuration=...`
+
+## Roadmap
+
+* Optional authentication with github or google
+* Retrying client
+* Logging configuration
+* WAR distribution support
 
 ## License
 
