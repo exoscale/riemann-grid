@@ -34,24 +34,24 @@
       (wrap-json-response)
       (wrap-resource "public")))
 
+(def cli-opts
+  [["-l" "--listen"       "listen on"    :default "127.0.0.1"]
+   ["-p" "--listen-port"  "listen port"  :parse-fn #(Integer. %) :default 8484]
+   ["-H" "--riemann-host" "riemann host" :default "127.0.0.1"]
+   ["-P" "--riemann-port" "riemann port" :parse-fn #(Integer. %) :default 5555]
+   ["-h" "--help"         "show help"    :flag true :default false]
+   ["-e" "--env"          "environment"  :default "production"]])
+
 (defn -main
   [& args]
-  (let [[options args banner] (cli args
-                                   ["-H" "--host" "host" :default "127.0.0.1"]
-                                   ["-P" "--client-port" "riemann port"
-                                    :parse-fn #(Integer. %) :default 5555]
-                                   ["-h" "--help" "show help"
-                                    :flag true :default false]
-                                   ["-p" "--port" "listening port"
-                                    :parse-fn #(Integer. %) :default 8484]
-                                   ["-e" "--env"  "environment"
-                                    :default "production"])]
+  (let [[options args banner] (apply cli args cli-opts)]
     (when (:help options)
       (println banner)
       (System/exit 0))
-    (reset! riemann-client (tcp-client :host (:host options)
-                                       :port (:client-port options)))
+    
+    (reset! riemann-client (tcp-client :host (:riemann-host options)
+                                       :port (:riemann-port options)))
     (run-jetty (if (= "development" (:env options))
                  (-> api-handler (wrap-reload))
                  api-handler)
-               {:port (:port options)})))
+               {:address (:listen options) :port (:listen-port options)})))
