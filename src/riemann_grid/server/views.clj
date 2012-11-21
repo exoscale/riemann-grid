@@ -23,7 +23,7 @@
   [:div.navbar.navbar-inverse
    [:div.navbar-inner
     (container-fluid
-     [:a.brand {:href "#"} "Riemann Dash"])]])
+     [:a.brand {:href "#"} "Riemann Grid"])]])
 
 (defhtml layout
   [& content]
