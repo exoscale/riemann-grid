@@ -1,1 +1,5 @@
+description "riemann grid view"
+start on runlevel [235]
+stop on runlevel [016]
+respawn
 exec java -jar /usr/share/java/riemann-grid.jar
