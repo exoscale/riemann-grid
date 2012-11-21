@@ -2,6 +2,7 @@
 /lib
 /classes
 /checkouts
+/.lein-cljsbuild-compiler-0
 pom.xml
 *.jar
 *.class
