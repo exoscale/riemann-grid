@@ -58,7 +58,6 @@
   []
   (html
    (layout
-    [:h2#dashname "main alerts"]
     [:div.offset1
      [:form
       [:div.input-append {:align "center"}
