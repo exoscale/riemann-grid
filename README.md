@@ -42,10 +42,17 @@ issues:
 
 ## Roadmap
 
+Small items:
+
 * Optional authentication with github or google
 * Retrying client
 * Logging configuration
 * WAR distribution support
+
+Big items:
+
+* Dashboard mode
+* Link to graphite
 
 ## License
 
