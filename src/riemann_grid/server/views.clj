@@ -64,6 +64,6 @@
       [:div.input-append {:align "center"}
        [:input#cmdline.input-append.input-xxlarge {:type "text"}]
        [:button#cmdsubmit.btn {:type "submit"} "query"]]]]
-    [:table#alerts.table
+    [:table#alerts.table.table-condensed
      [:thead#grid-header]
      [:tbody#grid-body]])))
