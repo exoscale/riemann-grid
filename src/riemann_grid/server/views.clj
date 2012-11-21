@@ -1,7 +1,7 @@
 (ns riemann-grid.server.views
   (:use [hiccup.core :only [html]]
         [hiccup.page :only [html5 include-css include-js]]
-        [hiccup.def :only [defhtml]]))
+        [hiccup.def  :only [defhtml]]))
 
 (def bootbase "//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/")
 (def bootcss  (str bootbase "css/bootstrap-combined.min.css"))
@@ -29,7 +29,7 @@
   [& content]
   (html5
    [:head
-    [:title "riemann dashboard"]
+    [:title "riemann grid"]
     (include-css bootcss)]
    [:body
     (menubar)
