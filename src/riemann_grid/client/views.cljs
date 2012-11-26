@@ -4,9 +4,9 @@
 
 (def nbsp "&nbsp;")
 (def state-to-button-type
-  {"ok"       :button.btn.btn-success.disabled
-   "warning"  :button.btn.btn-warning.disabled
-   "critical" :button.btn.btn-danger.disabled})
+  {"ok"       :button.btn.btn-success.btn-mini.disabled
+   "warning"  :button.btn.btn-warning.btn-mini.disabled
+   "critical" :button.btn.btn-danger.btn-mini.disabled})
 
 (defpartial grid-header-elem
   [e]
@@ -22,7 +22,7 @@
   [:td
    (if service
      (let [{:strs [state metric]} (first service)
-           button-type (get state-to-button-type state :btn.disabled)]
+           button-type (get state-to-button-type state :btn.disabled.btn-mini)]
        [button-type metric])
      " ")])
 
