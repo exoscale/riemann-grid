@@ -24526,7 +24526,7 @@ goog.provide("riemann_grid.client.views");
 goog.require("cljs.core");
 goog.require("crate.core");
 riemann_grid.client.views.nbsp = "&nbsp;";
-riemann_grid.client.views.state_to_button_type = cljs.core.ObjMap.fromObject(["ok", "warning", "critical"], {"ok":"\ufdd0'button.btn.btn-success.disabled", "warning":"\ufdd0'button.btn.btn-warning.disabled", "critical":"\ufdd0'button.btn.btn-danger.disabled"});
+riemann_grid.client.views.state_to_button_type = cljs.core.ObjMap.fromObject(["ok", "warning", "critical"], {"ok":"\ufdd0'button.btn.btn-success.btn-mini.disabled", "warning":"\ufdd0'button.btn.btn-warning.btn-mini.disabled", "critical":"\ufdd0'button.btn.btn-danger.btn-mini.disabled"});
 var group__2927__auto__ = cljs.core.swap_BANG_.call(null, crate.core.group_id, cljs.core.inc);
 riemann_grid.client.views.grid_header_elem = function grid_header_elem(e) {
   var elem__2928__auto__ = crate.core.html.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'th", e], true));
@@ -24548,7 +24548,7 @@ riemann_grid.client.views.grid_body_elem = function grid_body_elem(service) {
     var map__2947__$1 = cljs.core.seq_QMARK_.call(null, map__2947) ? cljs.core.apply.call(null, cljs.core.hash_map, map__2947) : map__2947;
     var metric = cljs.core._lookup.call(null, map__2947__$1, "metric", null);
     var state = cljs.core._lookup.call(null, map__2947__$1, "state", null);
-    var button_type = cljs.core._lookup.call(null, riemann_grid.client.views.state_to_button_type, state, "\ufdd0'btn.disabled");
+    var button_type = cljs.core._lookup.call(null, riemann_grid.client.views.state_to_button_type, state, "\ufdd0'btn.disabled.btn-mini");
     return cljs.core.PersistentVector.fromArray([button_type, metric], true)
   }() : " "], true));
   elem__2928__auto__.setAttribute("crateGroup", group__2927__auto__);
