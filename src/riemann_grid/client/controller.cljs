@@ -11,6 +11,11 @@
 (def timer        (atom nil))
 (def stored-query (atom "true"))
 
+(defn fixup-metric
+  [{:strs [metric] :as event}]
+  (let [new-metric (.toFixed metric 2)]
+    (assoc event "metric" new-metric)))
+
 (defn update-grid-header
   [elems]
   (empty $grid-header)
@@ -25,7 +30,8 @@
 (defn update-grid
   [events]
   (.log js/console "got events back, updating grid")
-  (let [services (group-by #(get % "service") events)
+  (let [events   (map fixup-metric events)
+        services (group-by #(get % "service") events)
         hosts    (group-by #(get % "host") events)]
     (update-grid-header (cons "host" (keys services)))
     (update-grid-body
