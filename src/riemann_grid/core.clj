@@ -16,12 +16,29 @@
 
 (def riemann-client (atom nil))
 
+(defn format-host-states
+  [[host states]]
+  [host (->> states
+             (group-by :service)
+             (map (juxt key (comp first val)))
+             (reduce merge {}))])
+
+(defn format-states
+  [states]
+  {:hosts    (->> states (group-by :host) keys)
+   :services (->> states (group-by :service) keys)
+   :events   (->> states
+                  (group-by :host)
+                  (map format-host-states)
+                  (reduce merge {}))})
+
 (defroutes main-routes
   (POST "/api/states"
-       {{:strs [q]} :params}
-       (->> (query @riemann-client q)
+        {{:keys [q]} :body}
+        (->> (query @riemann-client q)
             (map #(->> % seq (map (partial apply hash-map)) (reduce merge)))
             (vec)
+            format-states
             response))
 
   (GET "/"
@@ -32,7 +49,7 @@
 
 (def api-handler
   (-> main-routes
-      (wrap-params)
+      (wrap-json-body {:keywords? true})
       (wrap-json-response)
       (wrap-resource "public")))
 

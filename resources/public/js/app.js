@@ -1,58 +1,57 @@
-var app = angular.module('grid');
+angular.module('grid', [])
+    .controller('GridC', ['$scope', '$http', '$location', function (scope, http, loc) {
 
-app.controller('GridC', ['$scope','$q', '$http', function (scope, q, http) {
-    scope.hosts = [];
-    scope.services = [];
-    scope.events = {};
-    scope.query = "true";
+	scope.hosts = [];
+	scope.services = [];
+	scope.events = {};
 
-    var update_states = function(states) {
+	
+	console.log(loc.path());
+	if (loc.path() != '/' && loc.path() != '') {
+	    scope.query = atob(loc.path().substr(1));
+	} else {
+	    scope.query = 'host="gv1m-vl-vis-graph01"';
+	}
 
-	scope.services = _.chain(states).groupBy('service').keys().values();
-	scope.hosts = _.chain(states).groupBy('hosts').keys().values();
+	scope.get_states = function() {
+	    http.post('/api/states', {q: scope.query})
+		.success(function (data) {
+		    scope.hosts = data.hosts;
+		    scope.services = data.services;
+		    scope.events = data.events;
+		});
+	};
 
-	scope.events = _.chain(states)
-	    .groupBy('hosts')
-	    .map(function (k,v) {
-		var o = {};
-		o[k] = _.chain(v)
-		    .groupBy('service')
-		    .map(function(subk, subv) {
-			var subo = {};
-			subo[subk] = _.first(subv);
-			return subo;
-		    })
-		    .reduce(function(memo, item) {
-			return _.extend(memo,item);
-		    }, {})
-		    .value();
-		return o;
-	    })
-	    .reduce(function(memo, item) {
-		return _.extend(memo, item);
-	    }, {})
-	    .value();
-		    
-	scope.services = _.chain(states)
-	    .map(function (event) { return event.service; })
-	    .uniq()
-	    .value();
+	scope.event_state = function(host, service) {
+	    if (scope.events[host] && scope.events[host][service]) {
+		switch (scope.events[host][service].state) {
+		case 'ok':
+		    return 'btn-success';
+		case 'warning':
+		    return 'btn-warning';
+		case 'critical':
+		    return 'btn-danger';
+		default:
+		    return '';
+		}
+	    }
+	};
 
-	scope.hosts = _.chain(states)
-	    .map(function (event) { return event.host; })
-	    .uniq()
-	    .value();
+	scope.event_metric = function(host, service) {
+	    if (scope.events[host] && scope.events[host][service]) {
+		return scope.events[host][service].metric;
+	    }
+	};
 
-	console.log(scope.events);
-
-    };
-
-    var get_states = function() {
-	http.post('/api/states', {q: scope.query})
-	    .success(function (data) {
-		update_states(data);
-	    });
-    };
-
-    setInterval(get_states, 5000);
-}]);
+	scope.get_states();
+	setInterval(scope.get_states, 10000);
+    }])
+    .filter('precision', function() {
+	return function(input, p) {
+            input_float = "0.00";
+            if (input) {
+		input_float = parseFloat(input.toString()).toFixed(p);
+            }
+            return input_float;
+	}
+    });
