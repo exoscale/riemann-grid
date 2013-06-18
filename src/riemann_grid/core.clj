@@ -1,21 +1,23 @@
-(ns riemann-grid.server.core
-  (:use [compojure.core             :only [GET POST PUT DELETE defroutes]]
-        [clojure.tools.cli          :only [cli]]
-        [riemann.client             :only [tcp-client query]]
-        [ring.middleware.json       :only [wrap-json-body wrap-json-response]]
-        [ring.middleware.params     :only [wrap-params]]
-        [ring.middleware.resource   :only [wrap-resource]]
-        [ring.middleware.stacktrace :only [wrap-stacktrace]]
-        [ring.middleware.reload     :only [wrap-reload]]
-        [ring.util.response         :only [response status content-type charset]]
-        [ring.adapter.jetty         :only [run-jetty]]
-        [riemann-grid.server.views  :as views])
+(ns riemann-grid.core
+  (:require [compojure.core             :refer [GET POST PUT DELETE defroutes]]
+            [clojure.tools.cli          :refer [cli]]
+            [riemann.client             :refer [tcp-client query]]
+            [ring.middleware.json       :refer [wrap-json-body
+                                                wrap-json-response]]
+            [ring.middleware.params     :refer [wrap-params]]
+            [ring.middleware.resource   :refer [wrap-resource]]
+            [ring.middleware.stacktrace :refer [wrap-stacktrace]]
+            [ring.middleware.reload     :refer [wrap-reload]]
+            [ring.util.response         :refer [response status content-type
+                                                charset]]
+            [ring.adapter.jetty         :refer [run-jetty]]
+            [riemann-grid.views         :as views])
   (:gen-class))
 
 (def riemann-client (atom nil))
 
 (defroutes main-routes
-  (GET "/api/states"
+  (POST "/api/states"
        {{:strs [q]} :params}
        (->> (query @riemann-client q)
             (map #(->> % seq (map (partial apply hash-map)) (reduce merge)))
