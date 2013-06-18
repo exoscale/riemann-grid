@@ -15,7 +15,7 @@
                                      [compojure                 "1.1.3"]
                                      [hiccup                    "1.0.2"]
                                      [ring/ring-json            "0.1.2"]
-                                     [riemann-clojure-client    "0.0.4"]
+                                     [riemann-clojure-client    "0.2.7-SNAPSHOT"]
                                      [ring/ring-core            "1.1.6"]
                                      [ring/ring-jetty-adapter   "1.1.6"]
                                      [ring/ring-devel           "1.1.6"]
