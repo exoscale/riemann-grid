@@ -13,7 +13,7 @@
 
 (defn fixup-metric
   [{:strs [metric] :as event}]
-  (let [new-metric (.toFixed metric 2)]
+  (let [new-metric (if (number? metric) (.toFixed metric 2) metric)]
     (assoc event "metric" new-metric)))
 
 (defn update-grid-header
