@@ -34,7 +34,9 @@
             :http-equiv "X-UA-Compatible"}]
     [:title "riemann grid"]
     (include-css "/css/bootstrap.css")
-    (include-css "/css/bootstrap-responsive.css")]
+    (include-css "/css/bootstrap-responsive.css")
+    (include-css "/css/font-awesome.css")
+    (include-css "/css/font-awesome-ie7.css")]
    [:body
     (menubar)
     (container-fluid
@@ -42,6 +44,7 @@
     (include-js "/js/vendor/jquery.js")
     (include-js "/js/vendor/bootstrap.js")
     (include-js "/js/vendor/angular.js")
+    (include-js "/js/vendor/ui-bootstrap.js")
     (include-js "/js/vendor/underscore.js")
     (include-js "/js/app.js")]])
 
@@ -51,11 +54,11 @@
    (layout
     (row-fluid
      [:div.span12 {:ng-controller "GridC"}
-      [:form {:ng-submit "get_states()"}
+      [:form {:ng-submit "update_query()"}
        [:div.input-append {:align "center"}
         [:input.input-append.input-xxlarge {:type "text"
-                                            :ng-model "query"
-                                            :ng-change "update_loc"}]]]
+                                            :ng-model "query"}]
+        [:button.btn {:popover "{{query_url()}}"} [:i.icon-share]]]]
       [:table.table.table-condensed
        [:thead
         [:tr

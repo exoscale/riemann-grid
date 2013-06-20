@@ -1,25 +1,36 @@
-angular.module('grid', [])
+angular.module('grid', ['ui.bootstrap.popover'])
     .controller('GridC', ['$scope', '$http', '$location', function (scope, http, loc) {
 
 	scope.hosts = [];
 	scope.services = [];
 	scope.events = {};
-
 	
-	console.log(loc.path());
 	if (loc.path() != '/' && loc.path() != '') {
-	    scope.query = atob(loc.path().substr(1));
+	    var query = atob(loc.path().substr(1));
+	    scope.query = query;
+	    scope.saved_query = query;
+	    
 	} else {
 	    scope.query = 'state != "ok"';
+	    scope.saved_query = 'state != "ok"';
 	}
 
 	scope.get_states = function() {
-	    http.post('/api/states', {q: scope.query})
+	    http.post('/api/states', {q: scope.saved_query})
 		.success(function (data) {
 		    scope.hosts = data.hosts;
 		    scope.services = data.services;
 		    scope.events = data.events;
 		});
+	};
+
+	scope.update_query = function() {
+	    scope.saved_query = scope.query;
+	    scope.get_states();
+	};
+
+	scope.query_url = function() {
+	    return ('<a href="/' + btoa(scope.query) + '">query shortcut</a>');
 	};
 
 	scope.event_state = function(host, service) {

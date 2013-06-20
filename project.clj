@@ -1,4 +1,4 @@
-(defproject riemann-grid "0.6.0"
+(defproject riemann-grid "0.6.1"
   :description "grid like view of riemann alerts"
   :url "https://github.com/exoscale/riemann-grid"
   :license {:name "Eclipse Public License"
