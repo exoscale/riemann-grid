@@ -1,4 +1,4 @@
-angular.module('grid', ['ui.bootstrap.popover'])
+angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
     .controller('GridC', ['$scope', '$http', '$location', function (scope, http, loc) {
 
 	scope.hosts = [];
@@ -30,7 +30,7 @@ angular.module('grid', ['ui.bootstrap.popover'])
 	};
 
 	scope.query_url = function() {
-	    return ('<a href="/' + btoa(scope.query) + '">query shortcut</a>');
+	    return btoa(scope.query);
 	};
 
 	scope.event_state = function(host, service) {

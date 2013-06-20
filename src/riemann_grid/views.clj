@@ -44,7 +44,7 @@
     (include-js "/js/vendor/jquery.js")
     (include-js "/js/vendor/bootstrap.js")
     (include-js "/js/vendor/angular.js")
-    (include-js "/js/vendor/ui-bootstrap.js")
+    (include-js "/js/vendor/ui-bootstrap-tpls.js")
     (include-js "/js/vendor/underscore.js")
     (include-js "/js/app.js")]])
 
@@ -58,7 +58,11 @@
        [:div.input-append {:align "center"}
         [:input.input-append.input-xxlarge {:type "text"
                                             :ng-model "query"}]
-        [:button.btn {:popover "{{query_url()}}"} [:i.icon-share]]]]
+        [:button.btn
+         {:tooltip-html-unsafe "<a href=\"/#/{{query_url()}}\">query shortcut</a>"
+          :tooltip-placement "right"
+          :tooltip-trigger "click"}
+         [:i.icon-share]]]]
       [:table.table.table-condensed
        [:thead
         [:tr
