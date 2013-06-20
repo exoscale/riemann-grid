@@ -10,7 +10,7 @@ angular.module('grid', [])
 	if (loc.path() != '/' && loc.path() != '') {
 	    scope.query = atob(loc.path().substr(1));
 	} else {
-	    scope.query = 'host="gv1m-vl-vis-graph01"';
+	    scope.query = 'state != "ok"';
 	}
 
 	scope.get_states = function() {
