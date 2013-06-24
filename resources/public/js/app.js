@@ -1,20 +1,35 @@
+
 angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
-    .controller('GridC', ['$scope', '$http', '$location', function (scope, http, loc) {
+    .config(['$routeProvider', function(route) {
+	route
+	    .when('/host/:host',
+		 {templateUrl: '/tpl/host.html',
+		  controller: 'GridC'})
+	    .when('/query/:query',
+		  {templateUrl: '/tpl/grid.html',
+		   controller: 'GridC'})
+	    .otherwise({redirectTo: '/query/' + btoa('state != "ok"')});
+    }])
+    .controller('GridC', ['$scope', '$http', '$routeParams', function (scope, http, params) {
 
 	scope.hosts = [];
 	scope.services = [];
 	scope.events = {};
-	
-	if (loc.path() != '/' && loc.path() != '') {
-	    var query = atob(loc.path().substr(1));
+
+
+	if (params.host) {
+	    scope.host = params.host;
+	    scope.query = 'host = "' + params.host + '"';
+	    scope.saved_query = 'host = "' + params.host + '"';
+	} else if (params.query) {
+	    var query = atob(params.query);
 	    scope.query = query;
 	    scope.saved_query = query;
-	    
 	} else {
 	    scope.query = 'state != "ok"';
 	    scope.saved_query = 'state != "ok"';
 	}
-
+	
 	scope.get_states = function() {
 	    http.post('/api/states', {q: scope.saved_query})
 		.success(function (data) {
@@ -56,13 +71,4 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
 
 	scope.get_states();
 	setInterval(scope.get_states, 10000);
-    }])
-    .filter('precision', function() {
-	return function(input, p) {
-            input_float = "0.00";
-            if (input) {
-		input_float = parseFloat(input.toString()).toFixed(p);
-            }
-            return input_float;
-	}
-    });
+    }]);

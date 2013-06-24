@@ -40,10 +40,19 @@
             (vec)
             format-states
             response))
-
   (GET "/"
        []
        (-> (response (views/main))
+           (content-type "text/html")
+           (charset "UTF-8")))
+  (GET "/tpl/host.html"
+       []
+       (-> (response (views/host))
+           (content-type "text/html")
+           (charset "UTF-8")))
+  (GET "/tpl/grid.html"
+       []
+       (-> (response (views/grid))
            (content-type "text/html")
            (charset "UTF-8"))))
 

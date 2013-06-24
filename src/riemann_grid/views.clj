@@ -18,7 +18,7 @@
   [:div.navbar.navbar-inverse
    [:div.navbar-inner
     (container-fluid
-     [:a.brand {:href "#"} "Riemann Grid"])]])
+     [:a.brand {:href "#/"} "Riemann Grid"])]])
 
 (defhtml layout
   [& content]
@@ -53,24 +53,45 @@
   (html
    (layout
     (row-fluid
-     [:div.span12 {:ng-controller "GridC"}
-      [:form {:ng-submit "update_query()"}
-       [:div.input-append {:align "center"}
-        [:input.input-append.input-xxlarge {:type "text"
-                                            :ng-model "query"}]
-        [:button.btn
-         {:tooltip-html-unsafe "<a href=\"/#/{{query_url()}}\">query shortcut</a>"
-          :tooltip-placement "right"
-          :tooltip-trigger "click"}
-         [:i.icon-share]]]]
-      [:table.table.table-condensed
-       [:thead
-        [:tr
-         [:th "host"]
-         [:th {:ng-repeat "service in services"} [:small "{{service}}"]]]]
-       [:tbody
-        [:tr {:ng-repeat "host in hosts"}
-         [:td "{{host}}"]
-         [:td {:ng-repeat "service in services"}
-          [:button.btn.disabled.btn-mini {:ng-class "event_state(host,service)"}
-           "{{event_metric(host,service) | precision:2}}"]]]]]]))))
+     [:ng-view]))))
+
+(defn grid
+  []
+  (html
+   [:div.span12 {:ng-controller "GridC"}
+    [:form {:ng-submit "update_query()"}
+     [:div.input-append {:align "center"}
+      [:input.input-append.input-xxlarge {:type "text"
+                                          :ng-model "query"}]
+      [:button.btn
+       {:tooltip-html-unsafe "<a href=\"#/{{query_url()}}\">query shortcut</a>"
+        :tooltip-placement "right"
+        :tooltip-trigger "click"}
+       [:i.icon-share]]]]
+    [:table.table.table-condensed
+     [:thead
+      [:tr
+       [:th "host"]
+       [:th {:ng-repeat "service in services"} [:small "{{service}}"]]]]
+     [:tbody
+      [:tr {:ng-repeat "host in hosts"}
+       [:td [:a {:href "#/host/{{host}}"} "{{host}}"]]
+       [:td {:ng-repeat "service in services"}
+        [:button.btn.disabled.btn-mini {:ng-class "event_state(host,service)"}
+         "{{event_metric(host,service) | number}}"]]]]]]))
+
+(defn host
+  []
+  (html
+   [:div.span12 {:ng-controller "GridC"}
+    [:table.table.table-condensed
+     [:thead
+      [:tr
+       [:th "service"]
+       [:th "state"]]]
+     [:tbody
+      [:tr {:ng-repeat "service in services"}
+       [:td "{{service}}"]
+       [:td [:button.btn.disabled.btn-mini
+             {:ng-class "event_state(host,service)"}
+             "{{event_metric(host,service) | number}}"]]]]]]))
