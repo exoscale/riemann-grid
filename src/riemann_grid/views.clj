@@ -18,7 +18,9 @@
   [:div.navbar.navbar-inverse
    [:div.navbar-inner
     (container-fluid
-     [:a.brand {:href "#/"} "Riemann Grid"])]])
+     [:a.brand {:href "#/"} "Riemann Grid"]
+     [:div.pull-right.nav {:style "color: grey;"}
+      "Last updated: {{timestamp}}"])]])
 
 (defhtml layout
   [& content]
@@ -38,60 +40,65 @@
     (include-css "/css/font-awesome.css")
     (include-css "/css/font-awesome-ie7.css")]
    [:body
-    (menubar)
-    (container-fluid
-     content)
+    [:div
+     content]
     (include-js "/js/vendor/jquery.js")
     (include-js "/js/vendor/bootstrap.js")
     (include-js "/js/vendor/angular.js")
     (include-js "/js/vendor/ui-bootstrap-tpls.js")
     (include-js "/js/vendor/underscore.js")
+    (include-js "/js/vendor/moment.js")
     (include-js "/js/app.js")]])
 
 (defn main
   []
   (html
    (layout
-    (row-fluid
-     [:ng-view]))))
+    [:ng-view])))
 
 (defn grid
   []
   (html
-   [:div.span12 {:ng-controller "GridC"}
-    [:form {:ng-submit "update_query()"}
-     [:div.input-append {:align "center"}
-      [:input.input-append.input-xxlarge {:type "text"
-                                          :ng-model "query"}]
-      [:button.btn
-       {:tooltip-html-unsafe "<a href=\"#/{{query_url()}}\">query shortcut</a>"
-        :tooltip-placement "right"
-        :tooltip-trigger "click"}
-       [:i.icon-share]]]]
-    [:table.table.table-condensed
-     [:thead
-      [:tr
-       [:th "host"]
-       [:th {:ng-repeat "service in services"} [:small "{{service}}"]]]]
-     [:tbody
-      [:tr {:ng-repeat "host in hosts"}
-       [:td [:a {:href "#/host/{{host}}"} "{{host}}"]]
-       [:td {:ng-repeat "service in services"}
-        [:button.btn.disabled.btn-mini {:ng-class "event_state(host,service)"}
-         "{{event_metric(host,service) | number}}"]]]]]]))
+   (menubar)
+   (container-fluid
+    (row-fluid
+     [:div.span12
+      [:form {:ng-submit "update_query()"}
+       [:div.input-append {:align "center"}
+        [:input.input-append.input-xxlarge {:type "text"
+                                            :ng-model "query"}]
+        [:button.btn
+         {:tooltip-html-unsafe "<a href=\"#/{{query_url()}}\">query shortcut</a>"
+          :tooltip-placement "right"
+          :tooltip-trigger "click"}
+         [:i.icon-share]]]]
+      [:table.table.table-condensed
+       [:thead
+        [:tr
+         [:th "host"]
+         [:th {:ng-repeat "service in services"} [:small "{{service}}"]]]]
+       [:tbody
+        [:tr {:ng-repeat "host in hosts"}
+         [:td [:a {:href "#/host/{{host}}"} "{{host}}"]]
+         [:td {:ng-repeat "service in services"}
+          [:button.btn.disabled.btn-mini {:ng-class "event_state(host,service)"}
+           "{{event_metric(host,service) | number}}"]]]]]]))))
 
 (defn host
   []
   (html
-   [:div.span12 {:ng-controller "GridC"}
-    [:table.table.table-condensed
-     [:thead
-      [:tr
-       [:th "service"]
-       [:th "state"]]]
-     [:tbody
-      [:tr {:ng-repeat "service in services"}
-       [:td "{{service}}"]
-       [:td [:button.btn.disabled.btn-mini
-             {:ng-class "event_state(host,service)"}
-             "{{event_metric(host,service) | number}}"]]]]]]))
+   (menubar)
+   (container-fluid
+    (row-fluid
+     [:div.span12 {:ng-controller "GridC"}
+      [:table.table.table-condensed
+       [:thead
+        [:tr
+         [:th "service"]
+         [:th "state"]]]
+       [:tbody
+        [:tr {:ng-repeat "service in services"}
+         [:td "{{service}}"]
+         [:td [:button.btn.disabled.btn-mini
+               {:ng-class "event_state(host,service)"}
+               "{{event_metric(host,service) | number}}"]]]]]]))))

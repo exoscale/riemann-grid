@@ -1,4 +1,3 @@
-
 angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
     .config(['$routeProvider', function(route) {
 	route
@@ -12,10 +11,11 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
     }])
     .controller('GridC', ['$scope', '$http', '$routeParams', function (scope, http, params) {
 
+	var saved_date = null;
+
 	scope.hosts = [];
 	scope.services = [];
 	scope.events = {};
-
 
 	if (params.host) {
 	    scope.host = params.host;
@@ -33,6 +33,7 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
 	scope.get_states = function() {
 	    http.post('/api/states', {q: scope.saved_query})
 		.success(function (data) {
+		    saved_date = new Date();
 		    scope.hosts = data.hosts;
 		    scope.services = data.services;
 		    scope.events = data.events;
@@ -70,5 +71,15 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
 	};
 
 	scope.get_states();
+
+	var update_last_run = function() {
+	    if (!saved_date) {
+		scope.timestamp = "never";
+	    } else {
+		scope.timestamp = moment(saved_date).fromNow();
+	    }
+	}
+	scope.timestamp = "never";
+	setInterval(update_last_run, 500);
 	setInterval(scope.get_states, 10000);
     }]);
