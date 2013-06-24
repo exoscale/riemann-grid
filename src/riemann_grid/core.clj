@@ -25,8 +25,8 @@
 
 (defn format-states
   [states]
-  {:hosts    (->> states (group-by :host) keys)
-   :services (->> states (group-by :service) keys)
+  {:hosts    (->> states (group-by :host) keys sort)
+   :services (->> states (group-by :service) keys sort)
    :events   (->> states
                   (group-by :host)
                   (map format-host-states)
