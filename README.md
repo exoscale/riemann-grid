@@ -12,8 +12,7 @@ Due to a library problem between the server deps and client deps, you need
 two steps to compile riemann-grid:
 
 ```
-lein with-profile client cljsbuild once
-lein with-profile server uberjar
+lein uberjar
 ```
 
 The resulting jar is good to go, I would advise running at a very
