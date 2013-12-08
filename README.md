@@ -8,8 +8,7 @@ Either download the jar file from the downloads section, or compile yourself
 
 ## Compiling
 
-Due to a library problem between the server deps and client deps, you need
-two steps to compile riemann-grid:
+Compiling follows leiningen's SOP:
 
 ```
 lein uberjar
