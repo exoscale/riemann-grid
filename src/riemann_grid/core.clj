@@ -32,14 +32,21 @@
                   (map format-host-states)
                   (reduce merge {}))})
 
+(defn execute-query
+  [q]
+  (->> (query @riemann-client q)
+       (map #(->> % seq (map (partial apply hash-map)) (reduce merge)))
+       (vec)
+       format-states
+       response))
+
 (defroutes main-routes
   (POST "/api/states"
         {{:keys [q]} :body}
-        (->> (query @riemann-client q)
-            (map #(->> % seq (map (partial apply hash-map)) (reduce merge)))
-            (vec)
-            format-states
-            response))
+        (execute-query q))
+  (GET "/api/states"
+       [q]
+       (execute-query q))
   (GET "/"
        []
        (-> (response (views/main))
@@ -58,6 +65,7 @@
 
 (def api-handler
   (-> main-routes
+      (wrap-params)
       (wrap-json-body {:keywords? true})
       (wrap-json-response)
       (wrap-resource "public")))
