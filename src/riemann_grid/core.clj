@@ -84,10 +84,10 @@
     (when (:help options)
       (println banner)
       (System/exit 0))
-    
+
     (reset! riemann-client (tcp-client :host (:riemann-host options)
                                        :port (:riemann-port options)))
     (run-jetty (if (= "development" (:env options))
                  (-> api-handler (wrap-reload))
                  api-handler)
-               {:address (:listen options) :port (:listen-port options)})))
+               {:host (:listen options) :port (:listen-port options)})))
