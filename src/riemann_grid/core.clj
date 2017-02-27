@@ -5,6 +5,7 @@
             [ring.middleware.json       :refer [wrap-json-body
                                                 wrap-json-response]]
             [ring.middleware.params     :refer [wrap-params]]
+            [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.resource   :refer [wrap-resource]]
             [ring.middleware.stacktrace :refer [wrap-stacktrace]]
             [ring.middleware.reload     :refer [wrap-reload]]
@@ -68,7 +69,8 @@
       (wrap-params)
       (wrap-json-body {:keywords? true})
       (wrap-json-response)
-      (wrap-resource "public")))
+      (wrap-resource "public")
+      (wrap-content-type)))
 
 (def cli-opts
   [["-l" "--listen"       "listen on"    :default "127.0.0.1"]
