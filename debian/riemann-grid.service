@@ -1,0 +1,15 @@
+[Unit]
+Description=Rienmann Grid
+After=network.target
+
+[Service]
+Environment=RIEMANN_HOST=localhost
+Environment=RIEMANN_PORT=5555
+Environment=LISTEN_ADDRESS=127.0.0.1
+Environment=LISTEN_PORT=8080
+Environment=WEB_ENV=production
+ExecStart=/usr/bin/java -jar /usr/share/java/riemann-grid.jar
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

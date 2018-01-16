@@ -1,0 +1,16 @@
+description "riemann grid view"
+start on runlevel [235]
+stop on runlevel [016]
+respawn
+script
+  [ -f /etc/default/riemann-grid ] && . /etc/default/riemann-grid
+  [ -z "$LISTEN_PORT" ] && LISTEN_PORT=8080
+  [ -z "$LISTEN_ADDRESS" ] && LISTEN_ADDRESS=127.0.0.1
+  [ -z "$RIEMANN_PORT" ] && RIEMANN_PORT=5555
+  [ -z "$RIEMANN_HOST" ] && RIEMANN_HOST=127.0.0.1
+  [ -z "$WEB_ENV" ] && WEB_ENV=production
+  RIEMANN_OPTS="-l $LISTEN_ADDRESS -p $LISTEN_PORT" 
+  RIEMANN_OPTS="$RIEMANN_OPTS -H $RIEMANN_HOST -P $RIEMANN_PORT"
+  RIEMANN_OPTS="$RIEMANN_OPTS -e $WEB_ENV"
+  exec java -jar /usr/share/java/riemann-grid.jar $RIEMANN_OPTS
+end script
