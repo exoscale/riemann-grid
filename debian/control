@@ -1,0 +1,9 @@
+Source: riemann-grid
+Maintainer: Exoscale <ops@exoscale.ch>
+Build-Depends: debhelper (>= 9), lsb-release
+
+Package: riemann-grid
+Architecture: any
+Depends: ${misc:Depends},
+         default-jre-headless (>= 1:1.8) | java7-runtime-headless | java8-runtime-headless
+Description: Simple grid to view riemann states
