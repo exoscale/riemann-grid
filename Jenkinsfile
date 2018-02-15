@@ -17,7 +17,7 @@ node {
       }
     }
     stage('upload debian packages') {
-      aptlyBranchUpload('xenial', 'main', 'build-area/*.deb')
+      aptlyUpload('staging', 'xenial', 'main', 'build-area/*.deb')
     }
   }
   catch (err) {
