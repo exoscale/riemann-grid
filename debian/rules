@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 DISTRIBUTION = $(shell lsb_release -sc)
-VERSION := $(shell date +%Y.%m.%d-%H%M%S)
+VERSION := $(shell grep defproject project.clj | awk '{print $$3}')
 DEBVERSION := $(VERSION)-0~$(DISTRIBUTION)0
 
 %:
