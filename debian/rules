@@ -2,7 +2,7 @@
 
 DISTRIBUTION = $(shell lsb_release -sc)
 VERSION := $(shell grep defproject project.clj | awk '{print $$3}')
-DEBVERSION := $(VERSION)-0~$(DISTRIBUTION)0
+DEBVERSION := $(VERSION)-$(shell date +%Y%m%d-%H%M%S)~$(DISTRIBUTION)0
 
 %:
 	dh $@
