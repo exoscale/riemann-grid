@@ -11,4 +11,4 @@ override_dh_gencontrol:
 	dh_gencontrol -- -v$(DEBVERSION)
 
 override_dh_link:
-	dh_link usr/share/java/riemann-grid-*-standalone.jar usr/share/java/riemann-grid.jar
+	dh_link usr/share/java/riemann-grid-$(VERSION)-standalone.jar usr/share/java/riemann-grid.jar
