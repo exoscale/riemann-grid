@@ -1,5 +1,6 @@
 @Library('jenkins-pipeline') _
 
+
 node {
   // Wipe the workspace so we are building completely clean
   cleanWs()
@@ -9,8 +10,8 @@ node {
       stage('checkout code') {
         checkout scm
       }
-      lein()
-      build()
+      updateGithubCommitStatus('PENDING', "${env.WORKSPACE}/src")
+      uberjar()
       stage('build deb package') {
         gitPbuilder('xenial')
       }
@@ -21,30 +22,26 @@ node {
   }
   catch (err) {
     currentBuild.result = 'FAILURE'
+    updateGithubCommitStatus('FAILURE', "${env.WORKSPACE}/src")
     throw err
   }
   finally {
-    currentBuild.result = 'SUCCESS'
-  }
-}
-
-def lein() {
-  stage('lein') {
-    docker.withRegistry('https://infra-img001.gv2.p.exoscale.net') {
-      def clojureContainer = docker.image('infra-img001.gv2.p.exoscale.net/exoscale/clojure:latest')
-      clojureContainer.inside('-u root --net=host') {
-        sh 'lein pom'
-      }
+    if (currentBuild.result != 'FAILURE') {
+      updateGithubCommitStatus('SUCCESS', "${env.WORKSPACE}/src")
     }
+    cleanWs cleanWhenFailure: false
   }
 }
 
-def build() {
-  stage('build') {
-    docker.withRegistry('https://infra-img001.gv2.p.exoscale.net') {
-      def mavenContainer = docker.image('infra-img001.gv2.p.exoscale.net/exoscale/maven:latest')
-      mavenContainer.inside('-v /home/exec/.m2:/root/.m2 -u root --net=host') {
-        sh 'mvn -e install'
+def uberjar() {
+  stage('uberjar') {
+    docker.withRegistry('https://registry.internal.exoscale.ch') {
+      def clojureContainer = docker.image('registry.internal.exoscale.ch/exoscale/clojure:latest')
+      clojureContainer.pull()
+      clojureContainer.inside('-u root --net=host') {
+        sh 'lein clean'
+        sh 'lein test'
+        sh 'lein uberjar'
       }
     }
   }
