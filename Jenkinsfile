@@ -1,45 +1,34 @@
 @Library('jenkins-pipeline') _
 
-
 node {
-  // Wipe the workspace so we are building completely clean
   cleanWs()
 
   try {
     dir('src') {
-      stage('checkout code') {
+      stage('SCM') {
         checkout scm
       }
       updateGithubCommitStatus('PENDING', "${env.WORKSPACE}/src")
-      uberjar()
-      stage('build deb package') {
-        gitPbuilder('xenial')
+      stage('Build and Upload') {
+        docker()
       }
     }
-    stage('upload debian packages') {
-      aptlyUpload('staging', 'xenial', 'main', 'build-area/*.deb')
-    }
-  }
-  catch (err) {
+  } catch (err) {
     currentBuild.result = 'FAILURE'
-    updateGithubCommitStatus('FAILURE', "${env.WORKSPACE}/src")
     throw err
-  }
-  finally {
-    if (currentBuild.result != 'FAILURE') {
-      updateGithubCommitStatus('SUCCESS', "${env.WORKSPACE}/src")
+  } finally {
+    if (!currentBuild.result) {
+      currentBuild.result = 'SUCCESS'
     }
+    updateGithubCommitStatus(currentBuild.result, "${env.WORKSPACE}/src")
     cleanWs cleanWhenFailure: false
   }
 }
 
-def uberjar() {
-  stage('uberjar') {
-    def clojureContainer = docker.image('exoscale/clojure:latest')
-    clojureContainer.inside('-u root') {
-      sh 'lein clean'
-      sh 'lein test'
-      sh 'lein uberjar'
-    }
+def docker() {
+  tag = "master"
+  docker.withRegistry('https://registry.internal.exoscale.ch') {
+    def image = docker.build("registry.internal.exoscale.ch/exoscale/graphq:" + tag, "--network host .")
+    image.push()
   }
 }
