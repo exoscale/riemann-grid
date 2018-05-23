@@ -7,7 +7,7 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
 	    .when('/query/:query',
 		  {templateUrl: '/tpl/grid.html',
 		   controller: 'GridC'})
-	    .otherwise({redirectTo: '/query/' + btoa('state != "ok"')});
+	    .otherwise({redirectTo: '/query/' + btoa('state != "ok" and not tagged "maintenance"')});
     }])
     .controller('GridC', ['$scope', '$http', '$routeParams', function (scope, http, params) {
 
@@ -29,7 +29,7 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
 	    scope.query = 'state != "ok"';
 	    scope.saved_query = 'state != "ok"';
 	}
-	
+
 	scope.get_states = function() {
 	    http.post('/api/states', {q: scope.saved_query})
 		.success(function (data) {
