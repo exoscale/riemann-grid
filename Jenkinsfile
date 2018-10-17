@@ -13,11 +13,13 @@ node {
       updateGithubCommitStatus('PENDING', "${env.WORKSPACE}/src")
       uberjar()
       stage('build deb package') {
-        gitPbuilder('xenial')
+        gitPbuilder('xenial', false, '../build-area-xenial')
+        gitPbuilder('bionic', false, '../build-area-bionic')
       }
     }
     stage('upload debian packages') {
-      aptlyBranchUpload('xenial', 'main', 'build-area/*.deb')
+      aptlyBranchUpload('xenial', 'main', 'build-area-xenial/*.deb')
+      aptlyBranchUpload('bionic', 'main', 'build-area-bionic/*.deb')
     }
   }
   catch (err) {
