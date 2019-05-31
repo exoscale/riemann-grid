@@ -26,12 +26,13 @@ following arguments:
 * `-p` or `--listen-port`: HTTP port to listen on
 * `-H` or `--riemann-host`: Address where the riemann index lives
 * `-P` or `--riemann-port`: Port the index listens on
+* `-S` or `--riemann-hosts`: For multiple indexes, e.g. '--riemann-hosts server1.example.com:5555,server2.example.com:5757'
 * `-e` or `--environment`: Enable some debugging if set to "development"
 * `-h` or `--help`: display help and exit
 
 ## Caveats
 
-This first release is rough around the edges, it was 
+This first release is rough around the edges, it was
 put together in about a day, please mind the following
 issues:
 

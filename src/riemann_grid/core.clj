@@ -1,13 +1,13 @@
 (ns riemann-grid.core
   (:require [compojure.core             :refer [GET POST PUT DELETE defroutes]]
             [clojure.tools.cli          :refer [cli]]
+            [clojure.string             :as    string]
             [riemann.client             :refer [tcp-client query]]
             [ring.middleware.json       :refer [wrap-json-body
                                                 wrap-json-response]]
             [ring.middleware.params     :refer [wrap-params]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.resource   :refer [wrap-resource]]
-            [ring.middleware.stacktrace :refer [wrap-stacktrace]]
             [ring.middleware.reload     :refer [wrap-reload]]
             [ring.util.response         :refer [response status content-type
                                                 charset]]
@@ -15,7 +15,7 @@
             [riemann-grid.views         :as views])
   (:gen-class))
 
-(def riemann-client (atom nil))
+(def riemann-clients (atom []))
 
 (defn format-host-states
   [[host states]]
@@ -33,9 +33,16 @@
                   (map format-host-states)
                   (reduce merge {}))})
 
+(defn aggregated-query [q]
+  (->> @riemann-clients
+       (reduce (fn [acc riemann-client]
+                 (conj acc (query riemann-client q)))
+               [])
+       flatten))
+
 (defn execute-query
   [q]
-  (->> (query @riemann-client q)
+  (->> (aggregated-query q)
        (map #(->> % seq (map (partial apply hash-map)) (reduce merge)))
        (vec)
        format-states
@@ -72,13 +79,21 @@
       (wrap-resource "public")
       (wrap-content-type)))
 
+(defn parse-hosts [hosts]
+  (->> (string/split hosts #",")
+       (reduce (fn [acc uri]
+                 (let [[host port] (string/split uri #":")]
+                   (assoc acc host (Integer/parseInt port))))
+               {})))
+
 (def cli-opts
-  [["-l" "--listen"       "listen on"    :default "127.0.0.1"]
-   ["-p" "--listen-port"  "listen port"  :parse-fn #(Integer. %) :default 8484]
-   ["-H" "--riemann-host" "riemann host" :default "127.0.0.1"]
-   ["-P" "--riemann-port" "riemann port" :parse-fn #(Integer. %) :default 5555]
-   ["-h" "--help"         "show help"    :flag true :default false]
-   ["-e" "--env"          "environment"  :default "production"]])
+  [["-l" "--listen"        "listen on"     :default "127.0.0.1"]
+   ["-p" "--listen-port"   "listen port"   :parse-fn #(Integer. %) :default 8484]
+   ["-H" "--riemann-host"  "riemann host"  :default "127.0.0.1"]
+   ["-P" "--riemann-port"  "riemann port"  :parse-fn #(Integer. %) :default 5555]
+   ["-S" "--riemann-hosts" "riemann hosts" :parse-fn parse-hosts :default []]
+   ["-h" "--help"          "show help"     :flag true :default false]
+   ["-e" "--env"           "environment"   :default "production"]])
 
 (defn -main
   [& args]
@@ -87,8 +102,13 @@
       (println banner)
       (System/exit 0))
 
-    (reset! riemann-client (tcp-client :host (:riemann-host options)
-                                       :port (:riemann-port options)))
+    (if (not-empty (:riemann-hosts options))
+      (doseq [[host port] (:riemann-hosts options)]
+        (swap! riemann-clients conj (tcp-client :host host
+                                                :port port)))
+      (swap! riemann-clients conj (tcp-client :host (:riemann-host options)
+                                              :port (:riemann-port options))))
+
     (run-jetty (if (= "development" (:env options))
                  (-> api-handler (wrap-reload))
                  api-handler)
