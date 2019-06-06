@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/default/riemann-grid
-ExecStart=/usr/bin/java $JAVAOPTS -jar /usr/share/java/riemann-grid.jar -l $LISTEN_ADDRESS -p $LISTEN_PORT -H $RIEMANN_HOST -P $RIEMANN_PORT -e $WEB_ENV
+ExecStart=/usr/bin/java $JAVAOPTS -jar /usr/share/java/riemann-grid.jar -l $LISTEN_ADDRESS -p $LISTEN_PORT -S $RIEMANN_HOSTS -e $WEB_ENV
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 
