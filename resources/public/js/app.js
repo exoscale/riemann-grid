@@ -7,7 +7,7 @@ angular.module('grid', ['ui.bootstrap.tooltip', 'ui.bootstrap.tpls'])
 	    .when('/query/:query',
 		  {templateUrl: '/tpl/grid.html',
 		   controller: 'GridC'})
-	    .otherwise({redirectTo: '/query/' + btoa('state != "ok"')});
+	    .otherwise({redirectTo: '/query/' + btoa('state != "ok" and not tagged "maintenance"')});
     }])
     .controller('GridC', ['$scope', '$http', '$routeParams', function (scope, http, params) {
 
