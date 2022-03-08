@@ -1,4 +1,4 @@
-(defproject riemann-grid "0.6.5"
+(defproject riemann-grid "0.6.6"
   :description "grid like view of riemann alerts"
   :url "https://github.com/exoscale/riemann-grid"
   :license {:name "Eclipse Public License"
@@ -9,6 +9,7 @@
                  [compojure                 "1.2.1"]
                  [hiccup                    "1.0.5"]
                  [ring/ring-json            "0.3.1"]
+                 [less-awful-ssl            "1.0.6"]
                  [riemann-clojure-client    "0.2.11"]
                  [ring/ring-core            "1.3.1"]
                  [ring/ring-jetty-adapter   "1.3.1"]
