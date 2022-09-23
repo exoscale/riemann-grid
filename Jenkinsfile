@@ -37,8 +37,8 @@ node {
 
 def uberjar() {
   stage('uberjar') {
-    docker.withRegistry('https://registry.internal.exoscale.ch') {
-      def clojureContainer = docker.image('registry.internal.exoscale.ch/exoscale/clojure:latest')
+    docker.withRegistry("https://${EXOSCALE_DOCKER_REGISTRY}") {
+      def clojureContainer = docker.image("${EXOSCALE_DOCKER_REGISTRY}/exoscale/clojure:latest")
       clojureContainer.pull()
       clojureContainer.inside('-u root --net=host') {
         sh 'lein clean'
